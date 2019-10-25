@@ -6,7 +6,7 @@ public interface Service extends Remote {
 	public String echo(String input) throws RemoteException;
 	
 	public void print(String filename, String printer) throws RemoteException;
-	public List<Object> queue() throws RemoteException;
+	public List<PrintServer.printJob> queue() throws RemoteException;
 	public void topQueue(int job) throws RemoteException;
 	public void start() throws RemoteException;
 	public void stop() throws RemoteException;
@@ -14,7 +14,7 @@ public interface Service extends Remote {
 	public String status() throws RemoteException;
 	public String readConfig(String parameter) throws RemoteException;
 	public void setConfig(String parameter, String value) throws RemoteException;
-	public Boolean signup(String username, String password);
+	public Boolean signup(String username, String password) throws RemoteException;
 }
 
 /*

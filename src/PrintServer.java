@@ -18,7 +18,7 @@ import org.apache.commons.codec.binary.Base64;
 
 public class PrintServer extends UnicastRemoteObject implements Service 
 {
-	private class printJob
+	public class printJob
 	{
 		private int jobNr;
 		private String fileName;
@@ -60,28 +60,33 @@ public class PrintServer extends UnicastRemoteObject implements Service
 		System.out.println("File " + filename + "printed on " + printer);
 	}
 
-	public List<Object> queue() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+	//Return print queue
+	public List<printJob> queue() throws RemoteException {
+		return printQueue;
 	}
 
-	@Override
+	//Looks for job with the given jobnr. Moves it to the head of the queue.
 	public void topQueue(int job) throws RemoteException {
-		// TODO Auto-generated method stub
-		
+		for(int i = 0; i < printQueue.size(); i++) {
+			if(printQueue.get(i).getJobNr() == job) {
+				printQueue.add(0, printQueue.get(i));
+				printQueue.remove(i+1);
+			}
+		}
 	}
 
-	@Override
+	//"Starts the printserver" by initializing the printqueue.
 	public void start() throws RemoteException {
 		printQueue = new ArrayList<printJob>();
 	}
 
-	@Override
+	//"Stops the printserver by deleting the queue.
 	public void stop() throws RemoteException {
 		//Set reference to null and let GC take it. Simulating turning off.
 		printQueue = null; 
 	}
 
+	//stop -> start
 	@Override
 	public void restart() throws RemoteException {
 		stop();
@@ -89,10 +94,9 @@ public class PrintServer extends UnicastRemoteObject implements Service
 		
 	}
 
-	@Override
+	//
 	public String status() throws RemoteException {
-		// TODO Auto-generated method stub
-		return null;
+		return "There are currently " + printQueue + " jobs in the queue";
 	}
 
 	@Override
@@ -109,9 +113,14 @@ public class PrintServer extends UnicastRemoteObject implements Service
 	//----------------------------------------------------------------
 	
 	@Override
-	public Boolean signup(String username, String password) {
-		// TODO Auto-generated method stub
-		return null;
+	public Boolean signup(String username, String password) throws RemoteException
+	{
+		try {
+			storeLogin(username,password);
+		} catch (IOException e) {
+			return false;
+		}
+		return true;		
 	}
 	
 	private String hashPassword(String password)
@@ -137,11 +146,12 @@ public class PrintServer extends UnicastRemoteObject implements Service
 	//TODO hash password before writing
 	private void storeLogin(String userName, String password) throws IOException
 	{
-		File file = new File(System.getProperty("user.dir") + "PrinterLogins.txt");
+		File file = new File(System.getProperty("user.dir") +
+				"\\AuthenticationLab" + "PrinterLogins.txt");
 		FileOutputStream fop = new FileOutputStream(file, false);
 		file.createNewFile();
 		
-		byte[] toWrite = (userName + password).getBytes();
+		byte[] toWrite = (userName + " " + password).getBytes();
 		fop.write(toWrite);
 		fop.flush();
 		fop.close();
@@ -150,6 +160,7 @@ public class PrintServer extends UnicastRemoteObject implements Service
 	//Check whether the given password matches
 	private Boolean checkLogin(String userName, String password)
 	{
+		
 		return true;
 	}
 	

@@ -9,5 +9,6 @@ public class Client {
 	{
 		Service service = (Service) Naming.lookup("rmi://localhost:5099/PrintServer");
 		System.out.println("--- " + service.echo("hey server") + "  " + service.getClass().getName());
+		service.signup("testname","testpassword");
 	}
 }

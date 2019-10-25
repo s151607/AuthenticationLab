@@ -14,13 +14,13 @@ public class ApplicationServer {
 	public static void main(String[] args) throws RemoteException
 	{
 		Registry registry;
-		if(LocateRegistry.getRegistry(5099) != null)
-		{
-			registry = LocateRegistry.getRegistry(5099);
-		}
-		else
+		
+		try
 		{
 			registry = LocateRegistry.createRegistry(5099);
+		} catch (RemoteException e)
+		{
+			registry = LocateRegistry.getRegistry(5099);
 		}
 		registry.rebind("PrintServer", new PrintServer());
 	}
