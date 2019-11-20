@@ -4,17 +4,13 @@ import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ApplicationServer {
-	
-
-	
-	
-	
-	
+public class RegistryServer
+{
 	public static void main(String[] args) throws RemoteException
 	{
 		Registry registry;
-		
+
+		//Tries to create a registry on local port 5099. If one already exist get that instead.
 		try
 		{
 			registry = LocateRegistry.createRegistry(5099);
